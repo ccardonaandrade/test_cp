@@ -102,7 +102,15 @@ Any comment send it to:
 
 ### 10 most popular products
 
-Which products lead the pack in customer demand? Here's a snapshot of the top performers by quantity ordered:
+Which products lead the pack in customer demand? The table shows the top 10 products by total ordered quantity, displaying each product's volume contribution percentage, revenue generation, and financial impact percentage across the portfolio.
+
+**Conclusions:**
+
+- Product `3016012` dominates volume with 63,500 units (17.93% of orders) but contributes minimally to revenue (0.08%).
+
+- Product `97403` ranks third in quantity but generates the highest revenue ($1.7M), indicating it's a high-value item with strong demand.
+
+- Volume doesn't equal profit - the top revenue contributors (products `97403` and `5482401`) aren't the highest-volume sellers.
 
 ```{r}
 #| echo: false
@@ -110,8 +118,14 @@ Which products lead the pack in customer demand? Here's a snapshot of the top pe
 
 most_popular <- data |>
   group_by(product_number) |>
-  summarise(total_order_quantity=sum(original_quantity, na.rm = TRUE),
-            total_order_line=sum(order_line_item_total, na.rm = TRUE))
+  summarise(
+    total_order_quantity = sum(order_quantity, na.rm = TRUE),
+    total_order_line = sum(order_line_item_total, na.rm = TRUE)
+  ) |>
+  mutate(
+  share_quantity = round(100 * (total_order_quantity / sum(total_order_quantity)),2),
+  share_order_line = round(100 * (total_order_line / sum(total_order_line)),2)
+) |> select(product_number,total_order_quantity, share_quantity, total_order_line, share_order_line)
 
 
 most_popular |>
@@ -119,16 +133,24 @@ most_popular |>
   slice_head(n = 10) |>
   rename(
     "Product Number" = product_number,
-    "Total Quantity Ordered" = total_order_quantity,
-    "Total Order Line Amount" = total_order_line
+    "Total Ordered Quantity" = total_order_quantity,
+    "Total Ordered Amount" = total_order_line,
+    "Participation Quantity" = share_quantity,
+    "Participation Amount" = share_order_line,
   ) |>
-  kable(caption = "Top 10 Most Popular Products by Total Order Quantity", align = c("c", "r", "r")) |> row_spec(1:5, bold = T, color = "white", background = "#D7261E") 
+  kable(caption = "Top 10 Most Popular Products by Total Order Quantity", align = c("c", "r", "r", "r", "r")) |> row_spec(1:5, bold = T, color = "white", background = "#D7261E") 
 ```
 
 
 ### 3 clients with the most unfulfilled orders
 
-Unfulfilled orders can signal bottlenecks. Here are the top 3 clients most affected, along with the overall total:
+Unfulfilled orders can signal bottlenecks. The next table identifies the three clients with the highest number of unfulfilled orders, showing both the quantity of non-delivered orders and the financial impact of these missed opportunities.
+
+**Conclusions:**
+
+- Client `79016870` represents the greatest financial loss ($27,592.57) despite having fewer unfulfilled orders than the top client, suggesting these are higher-value transactions that should be prioritized.
+
+- While these three clients account for 208 unfulfilled orders worth $65,770.72, they represent only about 9.5% of the total 2,194 unfulfilled orders, indicating that addressing their issues would solve only a small portion of the overall fulfillment problem.
 
 ```{r}
 #| echo: false
@@ -172,6 +194,18 @@ rbind(top3, total_row) |>
 ### What happened during the first quarter of 2023?
 
 The visual analysis below breaks down trends in order volume, lost revenue, and delivery issues from June 2022 to June 2023—with a focus on patterns emerging between January and March 2023. Use the tabs to explore each dimension.
+
+**Conclusions:**
+
+- Order quantities reached their peak in January 2023 before steadily declining through March.
+
+- Loss amounts were consistently high throughout Q1 2023, with multiple extreme spikes indicating systematic fulfillment issues.
+
+- Average order values declined notably during Q1 2023, suggesting a shift toward lower-priced items.
+
+- The share of non-delivered orders increased dramatically in late Q1 2023, reaching the highest levels of the entire analysis period.
+
+- Asia consistently dominates monthly order shares, while Europe and the Americas trade places as distant seconds—highlighting Asia’s key role in demand.
 
 ```{r}
 #| echo: false
@@ -349,24 +383,25 @@ p6 <- ggplot() +
 data <- data |>
   mutate(entry_date = as.Date(entry_date))
 
-order_shares_daily <- data |>
-  group_by(entry_date, region_clean) |>
-  summarise(region_quantity = sum(order_quantity), .groups = "drop") |>
-  group_by(entry_date) |>
+# Aggregate data by month and region
+order_shares_monthly <- data |>
+  mutate(month = floor_date(entry_date, "month")) |>
+  group_by(month, region_clean) |>
+  summarise(region_quantity = sum(order_quantity, na.rm = TRUE), .groups = "drop") |>
+  group_by(month) |>
   mutate(
-    total_daily_quantity = sum(region_quantity),
-    share = region_quantity / total_daily_quantity
+    total_monthly_quantity = sum(region_quantity),
+    share = region_quantity / total_monthly_quantity
   )
 
-
-
-ggplot(order_shares_daily, aes(x = entry_date, y = share, fill = region_clean)) +
-  geom_area(alpha = 0.8, color = "white") +
+# Plot: Stacked bar chart by month
+ggplot(order_shares_monthly, aes(x = month, y = share, fill = region_clean)) +
+  geom_bar(stat = "identity", color = "white") +
   scale_y_continuous(labels = scales::percent_format(), limits = c(0, 1)) +
-    scale_x_date(
+  scale_x_date(
     limits = as.Date(c("2022-06-01", "2023-05-31")),
     date_labels = "%b"  # Format as abbreviated month name
-  )  +
+  ) +
   scale_fill_manual(
     values = c(
       "europe" = "darkblue",
@@ -380,8 +415,8 @@ ggplot(order_shares_daily, aes(x = entry_date, y = share, fill = region_clean)) 
     )
   ) +
   labs(
-    title = "Daily Share of Order Quantities by Region",
-    x = "Date",
+    title = "Monthly Share of Order Quantities by Region",
+    x = "Month",
     y = "Share of Ordered Quantity",
     fill = "Region"
   ) +
@@ -399,7 +434,15 @@ ggplot(order_shares_daily, aes(x = entry_date, y = share, fill = region_clean)) 
 
 ### How do customers respond after a delivery failure?
 
-The plot below reveals whether they choose to reorder the same product or not.
+The plot below reveals whether they choose to reorder the same product or not. 
+
+**Conclusions:**
+
+A **majority of customers reordered the product** after a failed delivery, suggesting that delivery issues do not entirely deter customers from trying again. This could indicate:
+
+- Strong product demand or loyalty.
+
+- Customers may attribute the failure to external factors rather than the product or seller.
 
 ```{r}
 #| echo: false
@@ -459,6 +502,12 @@ ggplot(never_came_back_summary, aes(x = status, y = count, fill = status)) +
 ## How do reordering and non-reordering customers differ?
 
 What is the cost of losing a customer? These visuals highlight the differences in average lost revenue and failed quantities between return customers and those who never came back.
+
+**Conclusions:**
+
+- Customers with larger failed quantities are more likely to reorder, perhaps because the stakes are higher for them. 
+
+- Meanwhile, a higher financial loss correlates with a greater chance that a customer will not return — highlighting the importance of minimizing and recovering from large financial impacts in delivery failures.
 
 ```{r}
 #| echo: false
@@ -530,6 +579,17 @@ p2 + p3 + p1 +
 
 
 ## How long are taking to reorder?
+
+The following plot shows how long it takes customers to reorder after a failed delivery.
+
+
+**Conclusions:**
+
+- Most customers reorder between 15 and 30 days after a failure.
+
+- There's a significant delay before they return — few reorder immediately.
+
+- The peak reorder time is around 20–25 days, meaning it takes 3+ weeks on average for the business to recover the revenue from a failed order.
 
 ```{r}
 #| echo: false

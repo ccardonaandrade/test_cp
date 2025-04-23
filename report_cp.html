@@ -98,7 +98,13 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="objective-i">Objective I</h2>
 <section id="most-popular-products" class="level3">
 <h3 class="anchored" data-anchor-id="most-popular-products">10 most popular products</h3>
-<p>Which products lead the pack in customer demand? Here’s a snapshot of the top performers by quantity ordered:</p>
+<p>Which products lead the pack in customer demand? The table shows the top 10 products by total ordered quantity, displaying each product’s volume contribution percentage, revenue generation, and financial impact percentage across the portfolio.</p>
+<p><strong>Conclusions:</strong></p>
+<ul>
+<li><p>Product <code>3016012</code> dominates volume with 63,500 units (17.93% of orders) but contributes minimally to revenue (0.08%).</p></li>
+<li><p>Product <code>97403</code> ranks third in quantity but generates the highest revenue ($1.7M), indicating it’s a high-value item with strong demand.</p></li>
+<li><p>Volume doesn’t equal profit - the top revenue contributors (products <code>97403</code> and <code>5482401</code>) aren’t the highest-volume sellers.</p></li>
+</ul>
 <div class="cell">
 <div class="cell-output-display">
 <table data-quarto-postprocess="true" class="table table-sm table-striped small">
@@ -106,60 +112,82 @@ ul.task-list li input[type="checkbox"] {
 <thead>
 <tr class="header">
 <th style="text-align: center;" data-quarto-table-cell-role="th">Product Number</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">Total Quantity Ordered</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">Total Order Line Amount</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Total Ordered Quantity</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Participation Quantity</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Total Ordered Amount</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Participation Amount</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: center; font-weight: bold; color: white !important; background-color: rgba(215, 38, 30, 255) !important;">3016012</td>
-<td style="text-align: right; font-weight: bold; color: white !important; background-color: rgba(215, 38, 30, 255) !important;">32003</td>
+<td style="text-align: right; font-weight: bold; color: white !important; background-color: rgba(215, 38, 30, 255) !important;">63500</td>
+<td style="text-align: right; font-weight: bold; color: white !important; background-color: rgba(215, 38, 30, 255) !important;">17.93</td>
 <td style="text-align: right; font-weight: bold; color: white !important; background-color: rgba(215, 38, 30, 255) !important;">38954.43</td>
+<td style="text-align: right; font-weight: bold; color: white !important; background-color: rgba(215, 38, 30, 255) !important;">0.08</td>
 </tr>
 <tr class="even">
 <td style="text-align: center; font-weight: bold; color: white !important; background-color: rgba(215, 38, 30, 255) !important;">5482401</td>
-<td style="text-align: right; font-weight: bold; color: white !important; background-color: rgba(215, 38, 30, 255) !important;">24523</td>
+<td style="text-align: right; font-weight: bold; color: white !important; background-color: rgba(215, 38, 30, 255) !important;">22972</td>
+<td style="text-align: right; font-weight: bold; color: white !important; background-color: rgba(215, 38, 30, 255) !important;">6.49</td>
 <td style="text-align: right; font-weight: bold; color: white !important; background-color: rgba(215, 38, 30, 255) !important;">1390084.84</td>
+<td style="text-align: right; font-weight: bold; color: white !important; background-color: rgba(215, 38, 30, 255) !important;">2.86</td>
 </tr>
 <tr class="odd">
 <td style="text-align: center; font-weight: bold; color: white !important; background-color: rgba(215, 38, 30, 255) !important;">97403</td>
-<td style="text-align: right; font-weight: bold; color: white !important; background-color: rgba(215, 38, 30, 255) !important;">20198</td>
+<td style="text-align: right; font-weight: bold; color: white !important; background-color: rgba(215, 38, 30, 255) !important;">18621</td>
+<td style="text-align: right; font-weight: bold; color: white !important; background-color: rgba(215, 38, 30, 255) !important;">5.26</td>
 <td style="text-align: right; font-weight: bold; color: white !important; background-color: rgba(215, 38, 30, 255) !important;">1719265.18</td>
+<td style="text-align: right; font-weight: bold; color: white !important; background-color: rgba(215, 38, 30, 255) !important;">3.54</td>
 </tr>
 <tr class="even">
 <td style="text-align: center; font-weight: bold; color: white !important; background-color: rgba(215, 38, 30, 255) !important;">5100500</td>
 <td style="text-align: right; font-weight: bold; color: white !important; background-color: rgba(215, 38, 30, 255) !important;">13700</td>
+<td style="text-align: right; font-weight: bold; color: white !important; background-color: rgba(215, 38, 30, 255) !important;">3.87</td>
 <td style="text-align: right; font-weight: bold; color: white !important; background-color: rgba(215, 38, 30, 255) !important;">15973.39</td>
+<td style="text-align: right; font-weight: bold; color: white !important; background-color: rgba(215, 38, 30, 255) !important;">0.03</td>
 </tr>
 <tr class="odd">
 <td style="text-align: center; font-weight: bold; color: white !important; background-color: rgba(215, 38, 30, 255) !important;">505018</td>
-<td style="text-align: right; font-weight: bold; color: white !important; background-color: rgba(215, 38, 30, 255) !important;">10135</td>
+<td style="text-align: right; font-weight: bold; color: white !important; background-color: rgba(215, 38, 30, 255) !important;">9733</td>
+<td style="text-align: right; font-weight: bold; color: white !important; background-color: rgba(215, 38, 30, 255) !important;">2.75</td>
 <td style="text-align: right; font-weight: bold; color: white !important; background-color: rgba(215, 38, 30, 255) !important;">720309.35</td>
+<td style="text-align: right; font-weight: bold; color: white !important; background-color: rgba(215, 38, 30, 255) !important;">1.48</td>
 </tr>
 <tr class="even">
-<td style="text-align: center;">8720790</td>
-<td style="text-align: right;">9144</td>
-<td style="text-align: right;">732083.84</td>
-</tr>
-<tr class="odd">
 <td style="text-align: center;">6598405</td>
-<td style="text-align: right;">8874</td>
+<td style="text-align: right;">8446</td>
+<td style="text-align: right;">2.38</td>
 <td style="text-align: right;">897852.30</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">14407</td>
-<td style="text-align: right;">7537</td>
-<td style="text-align: right;">1157772.18</td>
+<td style="text-align: right;">1.85</td>
 </tr>
 <tr class="odd">
+<td style="text-align: center;">8720790</td>
+<td style="text-align: right;">7981</td>
+<td style="text-align: right;">2.25</td>
+<td style="text-align: right;">732083.84</td>
+<td style="text-align: right;">1.51</td>
+</tr>
+<tr class="even">
 <td style="text-align: center;">8223018</td>
 <td style="text-align: right;">7202</td>
+<td style="text-align: right;">2.03</td>
 <td style="text-align: right;">253527.58</td>
+<td style="text-align: right;">0.52</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">14407</td>
+<td style="text-align: right;">7032</td>
+<td style="text-align: right;">1.99</td>
+<td style="text-align: right;">1157772.18</td>
+<td style="text-align: right;">2.38</td>
 </tr>
 <tr class="even">
-<td style="text-align: center;">5406</td>
-<td style="text-align: right;">6821</td>
-<td style="text-align: right;">1490768.73</td>
+<td style="text-align: center;">5482013</td>
+<td style="text-align: right;">7000</td>
+<td style="text-align: right;">1.98</td>
+<td style="text-align: right;">6338.44</td>
+<td style="text-align: right;">0.01</td>
 </tr>
 </tbody>
 </table>
@@ -170,7 +198,12 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="clients-with-the-most-unfulfilled-orders" class="level3">
 <h3 class="anchored" data-anchor-id="clients-with-the-most-unfulfilled-orders">3 clients with the most unfulfilled orders</h3>
-<p>Unfulfilled orders can signal bottlenecks. Here are the top 3 clients most affected, along with the overall total:</p>
+<p>Unfulfilled orders can signal bottlenecks. The next table identifies the three clients with the highest number of unfulfilled orders, showing both the quantity of non-delivered orders and the financial impact of these missed opportunities.</p>
+<p><strong>Conclusions:</strong></p>
+<ul>
+<li><p>Client <code>79016870</code> represents the greatest financial loss ($27,592.57) despite having fewer unfulfilled orders than the top client, suggesting these are higher-value transactions that should be prioritized.</p></li>
+<li><p>While these three clients account for 208 unfulfilled orders worth $65,770.72, they represent only about 9.5% of the total 2,194 unfulfilled orders, indicating that addressing their issues would solve only a small portion of the overall fulfillment problem.</p></li>
+</ul>
 <div class="cell">
 <div class="cell-output-display">
 <table data-quarto-postprocess="true" class="table table-sm table-striped small">
@@ -213,6 +246,14 @@ ul.task-list li input[type="checkbox"] {
 <section id="what-happened-during-the-first-quarter-of-2023" class="level3">
 <h3 class="anchored" data-anchor-id="what-happened-during-the-first-quarter-of-2023">What happened during the first quarter of 2023?</h3>
 <p>The visual analysis below breaks down trends in order volume, lost revenue, and delivery issues from June 2022 to June 2023—with a focus on patterns emerging between January and March 2023. Use the tabs to explore each dimension.</p>
+<p><strong>Conclusions:</strong></p>
+<ul>
+<li><p>Order quantities reached their peak in January 2023 before steadily declining through March.</p></li>
+<li><p>Loss amounts were consistently high throughout Q1 2023, with multiple extreme spikes indicating systematic fulfillment issues.</p></li>
+<li><p>Average order values declined notably during Q1 2023, suggesting a shift toward lower-priced items.</p></li>
+<li><p>The share of non-delivered orders increased dramatically in late Q1 2023, reaching the highest levels of the entire analysis period.</p></li>
+<li><p>Asia consistently dominates monthly order shares, while Europe and the Americas trade places as distant seconds—highlighting Asia’s key role in demand.</p></li>
+</ul>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Ordered Quantity</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Lost Amount</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Price and Shared of Non Deliveries</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-4" role="tab" aria-controls="tabset-1-4" aria-selected="false" href="">Geographical Origin</a></li></ul>
 <div class="tab-content">
@@ -269,6 +310,12 @@ ul.task-list li input[type="checkbox"] {
 <section id="how-do-customers-respond-after-a-delivery-failure" class="level3">
 <h3 class="anchored" data-anchor-id="how-do-customers-respond-after-a-delivery-failure">How do customers respond after a delivery failure?</h3>
 <p>The plot below reveals whether they choose to reorder the same product or not.</p>
+<p><strong>Conclusions:</strong></p>
+<p>A <strong>majority of customers reordered the product</strong> after a failed delivery, suggesting that delivery issues do not entirely deter customers from trying again. This could indicate:</p>
+<ul>
+<li><p>Strong product demand or loyalty.</p></li>
+<li><p>Customers may attribute the failure to external factors rather than the product or seller.</p></li>
+</ul>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -283,6 +330,11 @@ ul.task-list li input[type="checkbox"] {
 <section id="how-do-reordering-and-non-reordering-customers-differ" class="level2">
 <h2 class="anchored" data-anchor-id="how-do-reordering-and-non-reordering-customers-differ">How do reordering and non-reordering customers differ?</h2>
 <p>What is the cost of losing a customer? These visuals highlight the differences in average lost revenue and failed quantities between return customers and those who never came back.</p>
+<p><strong>Conclusions:</strong></p>
+<ul>
+<li><p>Customers with larger failed quantities are more likely to reorder, perhaps because the stakes are higher for them.</p></li>
+<li><p>Meanwhile, a higher financial loss correlates with a greater chance that a customer will not return — highlighting the importance of minimizing and recovering from large financial impacts in delivery failures.</p></li>
+</ul>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -295,6 +347,13 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="how-long-are-taking-to-reorder" class="level2">
 <h2 class="anchored" data-anchor-id="how-long-are-taking-to-reorder">How long are taking to reorder?</h2>
+<p>The following plot shows how long it takes customers to reorder after a failed delivery.</p>
+<p><strong>Conclusions:</strong></p>
+<ul>
+<li><p>Most customers reorder between 15 and 30 days after a failure.</p></li>
+<li><p>There’s a significant delay before they return — few reorder immediately.</p></li>
+<li><p>The peak reorder time is around 20–25 days, meaning it takes 3+ weeks on average for the business to recover the revenue from a failed order.</p></li>
+</ul>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
