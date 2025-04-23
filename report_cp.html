@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Data Analyst Test</title>
+<title>ZLG ING - Business Analysis</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -64,9 +64,10 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#objective-ii" id="toc-objective-ii" class="nav-link" data-scroll-target="#objective-ii">Objective II</a>
   <ul class="collapse">
   <li><a href="#how-do-customers-respond-after-a-delivery-failure" id="toc-how-do-customers-respond-after-a-delivery-failure" class="nav-link" data-scroll-target="#how-do-customers-respond-after-a-delivery-failure">How do customers respond after a delivery failure?</a></li>
-  </ul></li>
   <li><a href="#how-do-reordering-and-non-reordering-customers-differ" id="toc-how-do-reordering-and-non-reordering-customers-differ" class="nav-link" data-scroll-target="#how-do-reordering-and-non-reordering-customers-differ">How do reordering and non-reordering customers differ?</a></li>
   <li><a href="#how-long-are-taking-to-reorder" id="toc-how-long-are-taking-to-reorder" class="nav-link" data-scroll-target="#how-long-are-taking-to-reorder">How long are taking to reorder?</a></li>
+  <li><a href="#what-should-be-the-decision" id="toc-what-should-be-the-decision" class="nav-link" data-scroll-target="#what-should-be-the-decision">What should be the decision?</a></li>
+  </ul></li>
   </ul>
 </nav>
 </div>
@@ -76,8 +77,8 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Data Analyst Test</h1>
-<p class="subtitle lead">ZLG.inc</p>
+<h1 class="title">ZLG ING - Business Analysis</h1>
+<p class="subtitle lead">Data Analyst Test</p>
 </div>
 
 
@@ -92,7 +93,10 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p>Any comment send it to:</p>
+<p>This report examines ZLG.inc’s order data to assess challenges related to unfulfilled orders and evaluate the CEO’s claim about reorder behavior. We highlight key product demand trends, client-level impacts, and financial losses due to inventory shortages.</p>
+<p>We also analyze ordering patterns from January to March 2023—right after the POS system change—and test whether clients reordered the same products within 60 days at equal or higher quantities.</p>
+<p>Our aim is to offer a data-backed recommendation on the value of investing in improved warehouse management.</p>
+<p>Any comments or questions? Feel free to reach out:</p>
 <p><svg aria-hidden="true" role="img" viewbox="0 0 512 512" style="height:1em;width:1em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:currentColor;overflow:visible;position:relative;"><path d="M64 112c-8.8 0-16 7.2-16 16v22.1L220.5 291.7c20.7 17 50.4 17 71.1 0L464 150.1V128c0-8.8-7.2-16-16-16H64zM48 212.2V384c0 8.8 7.2 16 16 16H448c8.8 0 16-7.2 16-16V212.2L322 328.8c-38.4 31.5-93.7 31.5-132 0L48 212.2zM0 128C0 92.7 28.7 64 64 64H448c35.3 0 64 28.7 64 64V384c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128z"></path></svg> <a href="mailto:ccardonaandrade@gmail.com">ccardonaandrade@gmail.com</a></p>
 <section id="objective-i" class="level2">
 <h2 class="anchored" data-anchor-id="objective-i">Objective I</h2>
@@ -309,7 +313,7 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="objective-ii">Objective II</h2>
 <section id="how-do-customers-respond-after-a-delivery-failure" class="level3">
 <h3 class="anchored" data-anchor-id="how-do-customers-respond-after-a-delivery-failure">How do customers respond after a delivery failure?</h3>
-<p>The plot below reveals whether they choose to reorder the same product or not.</p>
+<p>The plot below shows whether customers reordered the same product within 60 days following an unsuccessful delivery.</p>
 <p><strong>Conclusions:</strong></p>
 <p>A <strong>majority of customers reordered the product</strong> after a failed delivery, suggesting that delivery issues do not entirely deter customers from trying again. This could indicate:</p>
 <ul>
@@ -326,9 +330,8 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 </section>
-</section>
-<section id="how-do-reordering-and-non-reordering-customers-differ" class="level2">
-<h2 class="anchored" data-anchor-id="how-do-reordering-and-non-reordering-customers-differ">How do reordering and non-reordering customers differ?</h2>
+<section id="how-do-reordering-and-non-reordering-customers-differ" class="level3">
+<h3 class="anchored" data-anchor-id="how-do-reordering-and-non-reordering-customers-differ">How do reordering and non-reordering customers differ?</h3>
 <p>What is the cost of losing a customer? These visuals highlight the differences in average lost revenue and failed quantities between return customers and those who never came back.</p>
 <p><strong>Conclusions:</strong></p>
 <ul>
@@ -345,8 +348,8 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 </section>
-<section id="how-long-are-taking-to-reorder" class="level2">
-<h2 class="anchored" data-anchor-id="how-long-are-taking-to-reorder">How long are taking to reorder?</h2>
+<section id="how-long-are-taking-to-reorder" class="level3">
+<h3 class="anchored" data-anchor-id="how-long-are-taking-to-reorder">How long are taking to reorder?</h3>
 <p>The following plot shows how long it takes customers to reorder after a failed delivery.</p>
 <p><strong>Conclusions:</strong></p>
 <ul>
@@ -363,6 +366,11 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 </div>
+</section>
+<section id="what-should-be-the-decision" class="level3">
+<h3 class="anchored" data-anchor-id="what-should-be-the-decision">What should be the decision?</h3>
+<p>Upgrading the warehouse system will not only reduce order failures but also accelerate reorders and enhance customer loyalty. It’s an investment in both <strong>customer retention</strong> and <strong>financial stability</strong>.</p>
+</section>
 </section>
 
 </main>

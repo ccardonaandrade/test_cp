@@ -1,6 +1,6 @@
 ---
-title: "Data Analyst Test"
-subtitle: "ZLG.inc "
+title: "ZLG ING - Business Analysis"
+subtitle: "Data Analyst Test"
 
 lang: en
 
@@ -94,7 +94,13 @@ data <- data |>
 
 ```
 
-Any comment send it to:
+This report examines ZLG.inc’s order data to assess challenges related to unfulfilled orders and evaluate the CEO's claim about reorder behavior. We highlight key product demand trends, client-level impacts, and financial losses due to inventory shortages.
+
+We also analyze ordering patterns from January to March 2023—right after the POS system change—and test whether clients reordered the same products within 60 days at equal or higher quantities.
+
+Our aim is to offer a data-backed recommendation on the value of investing in improved warehouse management.
+
+Any comments or questions? Feel free to reach out:
 
 `r fontawesome::fa("envelope")` [ccardonaandrade@gmail.com](mailto:ccardonaandrade@gmail.com)
 
@@ -434,7 +440,7 @@ ggplot(order_shares_monthly, aes(x = month, y = share, fill = region_clean)) +
 
 ### How do customers respond after a delivery failure?
 
-The plot below reveals whether they choose to reorder the same product or not. 
+The plot below shows whether customers reordered the same product within 60 days following an unsuccessful delivery.
 
 **Conclusions:**
 
@@ -499,7 +505,7 @@ ggplot(never_came_back_summary, aes(x = status, y = count, fill = status)) +
 ```
 
 
-## How do reordering and non-reordering customers differ?
+### How do reordering and non-reordering customers differ?
 
 What is the cost of losing a customer? These visuals highlight the differences in average lost revenue and failed quantities between return customers and those who never came back.
 
@@ -578,7 +584,7 @@ p2 + p3 + p1 +
 ```
 
 
-## How long are taking to reorder?
+### How long are taking to reorder?
 
 The following plot shows how long it takes customers to reorder after a failed delivery.
 
@@ -617,6 +623,8 @@ recovery_orders |>
 ```
 
 
+### What should be the decision?
 
+Upgrading the warehouse system will not only reduce order failures but also accelerate reorders and enhance customer loyalty. It’s an investment in both **customer retention** and **financial stability**.
 
 
