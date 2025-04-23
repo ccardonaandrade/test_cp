@@ -1,0 +1,394 @@
+---
+title: "Data Analyst Test"
+subtitle: "ZLG.inc "
+
+lang: en
+
+format: 
+  closeread-html:
+   css: msaz.css
+   code-tools: false
+   fig-format: svg
+   toc: true
+   toc_depth: 4
+   toc_float: true
+   toc-location: left
+   linkcolor: tomato
+  
+toc-title: "Jump to"
+---
+
+```{r}
+#| echo: false
+#| warning: false
+library(tidyverse)
+library(readxl)
+library(janitor)
+library(broom)
+library(knitr)
+library(kableExtra)
+library(patchwork)
+
+
+data_original <- read_xlsx("order_data_.xlsx")
+
+data <- data_original
+data <- data |> 
+  clean_names()
+
+
+data <- data |> 
+  mutate(ins_inventory = case_when(
+    reason_code == "69-Insufficient Inventory" ~ 1,
+    TRUE ~ 0  # everything else, including NA
+  ))
+
+data$product_number <- gsub("\\.0$", "", data$product_number)
+
+
+# Logical condition: rows where year(entry_date) > 2022
+filter_rows <- year(data$entry_date) > 2022
+
+# Remove parentheses
+data$product_number[filter_rows] <- gsub("\\(|\\)", "", data$product_number[filter_rows])
+
+# Remove minus sign
+data$product_number[filter_rows] <- gsub("-", "", data$product_number[filter_rows])
+
+
+data <- data |>
+  mutate(product_number = str_trim(product_number))
+
+
+data <- data |>
+  mutate(
+    # Create condition
+    condition = year(entry_date) > 2022,
+    
+    # Conditionally multiply each variable
+    customer_number = if_else(condition, customer_number * -1, customer_number),
+    original_quantity = if_else(condition, original_quantity * -1, original_quantity),
+    order_quantity = if_else(condition, order_quantity * -1, order_quantity),
+    delivery_quantity = if_else(condition, delivery_quantity * -1, delivery_quantity),
+    service_level_status = if_else(condition, service_level_status * -1, service_level_status)
+  ) %>%
+  select(-condition)  # Remove the helper column if not needed
+
+
+# Estimated price
+
+data <- data |>
+  mutate(estimated_price = order_line_item_total / ifelse(order_quantity == 0, NA, order_quantity))
+
+
+```
+
+## Objective I 
+
+### 10 most popular products
+
+```{r}
+#| echo: false
+#| warning: false
+
+most_popular <- data |>
+  group_by(product_number) |>
+  summarise(total_order_quantity=sum(original_quantity, na.rm = TRUE),
+            total_order_line=sum(order_line_item_total, na.rm = TRUE))
+
+
+most_popular |>
+  arrange(desc(total_order_quantity)) |>
+  slice_head(n = 10) |>
+  rename(
+    "Product Number" = product_number,
+    "Total Quantity Ordered" = total_order_quantity,
+    "Total Order Line Amount" = total_order_line
+  ) |>
+  kable(caption = "Top 10 Most Popular Products by Total Order Quantity", align = c("c", "r", "r")) |> row_spec(1:5, bold = T, color = "white", background = "#D7261E") 
+```
+
+
+### 3 clients with the most unfulfilled orders
+
+
+```{r}
+#| echo: false
+#| warning: false
+
+summary_status <- data |> 
+  filter(ins_inventory == 1) |> 
+  group_by(customer_number) |> 
+  summarise(numb_nodelivery = n(), 
+            total_amount_lost=sum(amount_lost, na.rm = TRUE))
+
+
+# First create the transformed top3 dataframe
+top3 <- summary_status |>
+  arrange(desc(numb_nodelivery)) |>
+  slice_head(n = 3) |>
+  rename(
+    "Costumer Number" = customer_number,
+    "Total Non-Delivered Orders" = numb_nodelivery,
+    "Total Amount Lost" = total_amount_lost
+  )
+
+# Get the exact column names from top3
+col_names <- colnames(top3)
+
+# Create the total row as a data frame with one row
+total_row <- data.frame(matrix(ncol = length(col_names), nrow = 1))
+colnames(total_row) <- col_names
+
+# Fill in the values
+total_row[1, "Costumer Number"] <- "Total"
+total_row[1, "Total Amount Lost"] <- sum(top3$`Total Amount Lost`, na.rm = TRUE)
+total_row[1, "Total Non-Delivered Orders"] <- ""
+
+# Combine and create the table
+rbind(top3, total_row) |>
+  kable(caption = "Top 3 clients with the most unfulfilled orders", align = c("c", "r", "r")) |> row_spec(4, bold = T, color = "white", background = "#D7261E") 
+```
+
+
+### What is happening between Jan through March of 2023?
+
+```{r}
+#| echo: false
+#| warning: false
+#| fig-align: center
+#| out-width: 90%
+
+
+summary_data <- data |>
+  mutate(entry_date = as.Date(entry_date)) |>
+  group_by(entry_date) |>
+  summarise(
+    total_order_quantity = sum(order_quantity, na.rm = TRUE),
+    total_amount_lost = sum(amount_lost, na.rm = TRUE),
+    ins_inventory = sum(ins_inventory, na.rm = TRUE),
+    avg_order_quantity = mean(order_quantity, na.rm = TRUE),
+    avg_amount_lost = mean(amount_lost, na.rm = TRUE),
+    avg_ins_inventory = mean(ins_inventory, na.rm = TRUE),
+    avg_estimated_price = mean(estimated_price, na.rm = TRUE)
+  ) |>
+  mutate(share_nodeliver = ins_inventory / total_order_quantity)
+
+
+highlight_data <- summary_data |>
+  filter(entry_date >= as.Date("2023-01-01") & entry_date <= as.Date("2023-03-31"))
+
+base_data <- summary_data |>
+  filter(entry_date < as.Date("2023-01-01") | entry_date > as.Date("2023-03-31"))
+
+p1 <- ggplot() +
+  geom_line(data = base_data, aes(x = entry_date, y = total_order_quantity), color = "steelblue") +
+  geom_line(data = highlight_data, aes(x = entry_date, y = total_order_quantity), color = "darkred") +
+  scale_x_date(
+    limits = as.Date(c("2022-06-01", "2023-06-30")),
+    date_labels = "%b"  # Format as abbreviated month name
+  ) +
+  scale_y_continuous(labels = scales::comma) +
+  theme_minimal() +
+  labs(
+    x = "Date",
+    y = "",
+    subtitle = "Total Order Quantity"
+  )
+
+p2 <- ggplot() +
+  geom_line(data = base_data, aes(x = entry_date, y = total_amount_lost), color = "steelblue") +
+  geom_line(data = highlight_data, aes(x = entry_date, y = total_amount_lost), color = "darkred") +
+  scale_x_date(
+    limits = as.Date(c("2022-06-01", "2023-06-30")),
+    date_labels = "%b"  # Format as abbreviated month name
+  ) +
+  scale_y_continuous(labels = scales::comma) +
+  theme_minimal() +
+  labs(
+    x = "Date",
+    y = "",
+    subtitle = "Total Amount Lost"
+  )
+
+p3 <- ggplot() +
+  geom_line(data = base_data, aes(x = entry_date, y = avg_order_quantity), color = "steelblue") +
+  geom_line(data = highlight_data, aes(x = entry_date, y = avg_order_quantity), color = "darkred") +
+  scale_x_date(
+    limits = as.Date(c("2022-06-01", "2023-06-30")),
+    date_labels = "%b"  # Format as abbreviated month name
+  ) +
+  theme_minimal() +
+  labs(
+    x = "Date", y="",
+    subtitle = "Average Order Quantity")
+
+p4 <- ggplot() +
+  geom_line(data = base_data, aes(x = entry_date, y = avg_amount_lost), color = "steelblue") +
+  geom_line(data = highlight_data, aes(x = entry_date, y = avg_amount_lost), color = "darkred") +
+  scale_x_date(
+    limits = as.Date(c("2022-06-01", "2023-06-30")),
+    date_labels = "%b"  # Format as abbreviated month name
+  ) +
+  scale_y_continuous(labels = scales::comma) +
+  theme_minimal() +
+  labs(
+    x = "Date", y = "", 
+    subtitle = "Average Amount Lost")
+
+(p1 + p2) / (p3 + p4) +
+  plot_annotation(
+    title = "Analysis Jun 2022 – Jun 2023"
+  ) & 
+  theme(plot.title = element_text(hjust = 0.5))  
+
+```
+
+
+## Objective II
+
+
+### How many customers are not ordering again?
+
+```{r}
+#| echo: false
+#| warning: false
+#| out-width: 60%
+#| fig-align: center
+
+data <- data |>
+  mutate(entry_date = as.Date(entry_date))
+
+no_deliver_events <- data |>
+  filter(ins_inventory == 1) |>
+  select(customer_number, product_number, entry_date, order_quantity, amount_lost) |>
+  rename(failed_date = entry_date, failed_qty = order_quantity, lost_amount=amount_lost)
+
+## How many do not reorder?
+
+# Step 1: Get all reorders after the failed date
+reorders <- data |>
+  inner_join(no_deliver_events, by = c("customer_number", "product_number")) |>
+  filter(entry_date > failed_date) |>
+  distinct(customer_number, product_number, failed_date) |>
+  mutate(came_back = 1)
+
+# Step 2: Join to no_deliver_events and create indicator
+no_deliver_events <- no_deliver_events |>
+  left_join(reorders, by = c("customer_number", "product_number", "failed_date")) |>
+  mutate(never_came_back = if_else(is.na(came_back), 1, 0)) |>
+  select(-came_back)
+
+# Calculate percentages for labels
+never_came_back_summary <- no_deliver_events |>
+  group_by(never_came_back) |>
+  summarise(count = n()) |>
+  mutate(percent = count / sum(count) * 100,
+         label = paste0(count, " (", round(percent, 1), "%)"),
+         status = ifelse(never_came_back == 1, "Did Not Reorder", "Reordered"))
+
+# Create improved bar chart
+ggplot(never_came_back_summary, aes(x = status, y = count, fill = status)) +
+  geom_bar(stat = "identity", width = 0.6) +
+  geom_text(aes(label = label), vjust = -0.5, size = 4) +
+  scale_fill_manual(values = c("Reordered" = "#1B9E77", "Did Not Reorder" = "#D95F02")) +
+  labs(
+    title = "Customer Reordering Behavior After Failed Delivery",
+    subtitle = "Analysis of whether customers reordered the same product after a delivery failure",
+    x = "",
+    y = "Number of Instances"
+  ) +
+  theme_minimal() +
+  theme(
+    legend.position = "none",
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    plot.subtitle = element_text(hjust = 0.5),
+    axis.text.x = element_text(size = 12)
+  )
+```
+
+## How long are taking to reorder?
+
+```{r}
+#| echo: false
+#| warning: false
+#| out-width: 60%
+#| fig-align: center
+
+recovery_orders <- no_deliver_events |>
+  inner_join(data, by = c("customer_number", "product_number")) |>
+  filter(entry_date > failed_date,                              # future orders
+         entry_date <= failed_date + 60,                        # within 60 days
+         order_quantity >= failed_qty) |>
+  mutate(days_since_failure = as.numeric(entry_date - failed_date)) |>
+  select(customer_number, product_number, lost_amount, failed_date, entry_date, order_quantity, days_since_failure)
+
+
+recovery_orders |>
+  group_by(customer_number) |>
+  summarise(avg_days = mean(days_since_failure)) |>
+  ggplot(aes(x = avg_days)) +
+  geom_histogram(binwidth = 5, fill = "#0073C2", color = "white") +
+  labs(title = "Average Reorder Time per Customer",
+       x = "Average Days Since Failure", y = "Number of Customers") +
+  theme_minimal()
+
+```
+
+
+## What are the differences?
+
+
+```{r}
+#| echo: false
+#| warning: false
+#| out-width: 80%
+#| fig-align: center
+
+p1 <- no_deliver_events |>
+  group_by(never_came_back) |>
+  summarise(total_lost_amount = mean(lost_amount, na.rm = TRUE)) |>
+  mutate(status = if_else(never_came_back == 1, "Never Came Back", "Reordered")) |>
+  ggplot(aes(x = status, y = total_lost_amount, fill = status)) +
+  geom_col(width = 0.6, show.legend = FALSE) +
+  labs(
+    title = "Average Lost Amount by Reorder Status",
+    x = "",
+    y = "Average Lost Amount ($)"
+  ) +
+  theme_minimal() +
+  scale_fill_manual(values = c("#D95F02", "#1B9E77")) +
+  ylim(0,1000)
+
+
+p2 <- no_deliver_events |>
+  group_by(never_came_back) |>
+  summarise(total_failed_qty = mean(failed_qty, na.rm = TRUE)) |>
+  mutate(status = if_else(never_came_back == 1, "Never Came Back", "Reordered")) |>
+  ggplot(aes(x = status, y = total_failed_qty, fill = status)) +
+  geom_col(width = 0.6, show.legend = FALSE) +
+  labs(
+    title = "Average Failed Quantity by Reorder Status",
+    x = "",
+    y = "Average Failed Quantity"
+  ) +
+  theme_minimal() +
+  scale_fill_manual(values = c("#D95F02", "#1B9E77"))
+
+p1 + p2
+
+```
+
+
+```{r}
+#| echo: false
+#| warning: false
+#| out-width: 60%
+#| fig-align: center
+
+no_deliver_events |>
+  count(never_came_back)
+
+```
+
+
