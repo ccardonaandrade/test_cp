@@ -29,6 +29,7 @@ library(knitr)
 library(kableExtra)
 library(patchwork)
 
+# I know this is not the best approach but due to time constrainst I did it this way
 
 data_original <- read_xlsx("C:/Users/ccard/Downloads/order_data_.xlsx")
 
@@ -521,6 +522,7 @@ What is the cost of losing a customer? These visuals highlight the differences i
 #| out-width: 80%
 #| fig-align: center
 
+# Plot 1: Average Lost Amount 
 p1 <- no_deliver_events |>
   group_by(never_came_back) |>
   summarise(avg_lost_amount = mean(lost_amount, na.rm = TRUE)) |>
