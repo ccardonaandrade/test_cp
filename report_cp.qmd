@@ -605,7 +605,6 @@ recovery_orders <- no_deliver_events |>
   mutate(days_since_failure = as.numeric(entry_date - failed_date)) |>
   select(customer_number, product_number, lost_amount, failed_date, entry_date, order_quantity, days_since_failure)
 
-
 recovery_orders |>
   group_by(customer_number) |>
   summarise(avg_days = mean(days_since_failure)) |>
