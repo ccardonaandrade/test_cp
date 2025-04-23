@@ -30,7 +30,7 @@ library(kableExtra)
 library(patchwork)
 
 
-data_original <- read_xlsx("order_data_.xlsx")
+data_original <- read_xlsx("C:/Users/ccard/Downloads/order_data_.xlsx")
 
 data <- data_original
 data <- data |> 
@@ -82,6 +82,10 @@ data <- data |>
 
 
 ```
+
+Any comment send it to:
+
+`r fontawesome::fa("envelope")` [ccardonaandrade@gmail.com](mailto:ccardonaandrade@gmail.com)
 
 ## Objective I 
 
@@ -185,7 +189,7 @@ p1 <- ggplot() +
   geom_line(data = base_data, aes(x = entry_date, y = total_order_quantity), color = "steelblue") +
   geom_line(data = highlight_data, aes(x = entry_date, y = total_order_quantity), color = "darkred") +
   scale_x_date(
-    limits = as.Date(c("2022-06-01", "2023-06-30")),
+    limits = as.Date(c("2022-06-01", "2023-05-31")),
     date_labels = "%b"  # Format as abbreviated month name
   ) +
   scale_y_continuous(labels = scales::comma) +
@@ -200,7 +204,7 @@ p2 <- ggplot() +
   geom_line(data = base_data, aes(x = entry_date, y = total_amount_lost), color = "steelblue") +
   geom_line(data = highlight_data, aes(x = entry_date, y = total_amount_lost), color = "darkred") +
   scale_x_date(
-    limits = as.Date(c("2022-06-01", "2023-06-30")),
+    limits = as.Date(c("2022-06-01", "2023-05-31")),
     date_labels = "%b"  # Format as abbreviated month name
   ) +
   scale_y_continuous(labels = scales::comma) +
@@ -215,7 +219,7 @@ p3 <- ggplot() +
   geom_line(data = base_data, aes(x = entry_date, y = avg_order_quantity), color = "steelblue") +
   geom_line(data = highlight_data, aes(x = entry_date, y = avg_order_quantity), color = "darkred") +
   scale_x_date(
-    limits = as.Date(c("2022-06-01", "2023-06-30")),
+    limits = as.Date(c("2022-06-01", "2023-05-31")),
     date_labels = "%b"  # Format as abbreviated month name
   ) +
   theme_minimal() +
@@ -227,7 +231,7 @@ p4 <- ggplot() +
   geom_line(data = base_data, aes(x = entry_date, y = avg_amount_lost), color = "steelblue") +
   geom_line(data = highlight_data, aes(x = entry_date, y = avg_amount_lost), color = "darkred") +
   scale_x_date(
-    limits = as.Date(c("2022-06-01", "2023-06-30")),
+    limits = as.Date(c("2022-06-01", "2023-05-31")),
     date_labels = "%b"  # Format as abbreviated month name
   ) +
   scale_y_continuous(labels = scales::comma) +
@@ -236,13 +240,88 @@ p4 <- ggplot() +
     x = "Date", y = "", 
     subtitle = "Average Amount Lost")
 
-(p1 + p2) / (p3 + p4) +
+#(p1 + p2) / (p3 + p4) +
+# plot_annotation(
+#   title = "Analysis Jun 2022 – Jun 2023"
+# ) & 
+# theme(plot.title = element_text(hjust = 0.5))  
+
+p5 <- ggplot() +
+  geom_line(data = base_data, aes(x = entry_date, y = avg_estimated_price), color = "steelblue") +
+  geom_line(data = highlight_data, aes(x = entry_date, y = avg_estimated_price), color = "darkred") +
+  scale_x_date(
+    limits = as.Date(c("2022-06-01", "2023-05-31")),
+    date_labels = "%b"  # Format as abbreviated month name
+  ) +
+  scale_y_continuous(labels = scales::comma) +
+  theme_minimal() +
+  labs(
+    x = "Date", y = "", 
+    subtitle = "Average Estimated Price")
+
+
+p6 <- ggplot() +
+  geom_line(data = base_data, aes(x = entry_date, y = avg_ins_inventory), color = "steelblue") +
+  geom_line(data = highlight_data, aes(x = entry_date, y = avg_ins_inventory), color = "darkred") +
+  scale_x_date(
+    limits = as.Date(c("2022-06-01", "2023-05-31")),
+    date_labels = "%b"  # Format as abbreviated month name
+  ) +
+  scale_y_continuous(labels = scales::comma) +
+  theme_minimal() +
+  labs(
+    x = "Date", y = "", 
+    subtitle = "Average Non-Delivered Orders")
+
+```
+
+
+::: panel-tabset
+## Ordered Quantity
+
+```{r}
+#| echo: false
+#| warning: false
+#| fig-align: center
+#| out-width: 90%
+(p1 + p3) +
   plot_annotation(
     title = "Analysis Jun 2022 – Jun 2023"
   ) & 
-  theme(plot.title = element_text(hjust = 0.5))  
-
+  theme(plot.title = element_text(hjust = 0.5)) 
 ```
+
+## Lost Amount
+
+```{r}
+#| echo: false
+#| warning: false
+#| fig-align: center
+#| out-width: 90%
+(p2 + p4) +
+  plot_annotation(
+    title = "Analysis Jun 2022 – Jun 2023"
+  ) & 
+  theme(plot.title = element_text(hjust = 0.5)) 
+```
+
+
+## Price and Shared of Non Deliveries
+
+```{r}
+#| echo: false
+#| warning: false
+#| fig-align: center
+#| out-width: 90%
+
+(p5 + p6) +
+  plot_annotation(
+    title = "Analysis Jun 2022 – Jun 2023"
+  ) & 
+  theme(plot.title = element_text(hjust = 0.5)) 
+```
+
+:::
 
 
 ## Objective II
@@ -380,15 +459,5 @@ p1 + p2
 ```
 
 
-```{r}
-#| echo: false
-#| warning: false
-#| out-width: 60%
-#| fig-align: center
-
-no_deliver_events |>
-  count(never_came_back)
-
-```
 
 
